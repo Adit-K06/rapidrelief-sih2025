@@ -1,0 +1,58 @@
+# Node / JS
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-store/
+
+# Expo / React Native
+.expo/
+.expo-shared/
+web-build/
+dist/
+build/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Build/
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata
+*.xcodeproj/project.xcworkspace/
+*.ipa
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+*.keystore
+*.jks
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env / secrets / local config
+.env
+.env.*
+config.js
+*.local.js
+*.secret.js
+serviceAccountKey*.json
+google-services.json
+GoogleService-Info.plist
+
+# Misc
+.cache/
+tmp/
+temp/
+*.log
