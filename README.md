@@ -34,7 +34,7 @@ RapidRelief is a real-time drone tracking and control system designed for disast
 ## Technical Stack
 
 ### Frontend
-- React Native (Expo)
+- React Native
 - react-native-maps with Google Maps integration
 - React Navigation for screen management
 - Custom UI components with dark theme

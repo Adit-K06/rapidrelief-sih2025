@@ -1,6 +1,8 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import Dict, Set
 import random, string
+import json
 
 from database import engine, SessionLocal, Base
 from models import Room
@@ -17,7 +19,7 @@ def get_db():
     finally:
         db.close()
 
-connections = {}
+connections: Dict[str, Set[WebSocket]] = {}
 
 @app.post("/create_room", response_model=RoomResponse)
 def create_room(db: Session = Depends(get_db)):
@@ -46,15 +48,38 @@ async def websocket_endpoint(websocket: WebSocket, room_code: str, username: str
         await websocket.close()
         return
 
+    # Initialize room if it doesn't exist
     if room_code not in connections:
-        connections[room_code] = []
-    connections[room_code].append(websocket)
-
+        connections[room_code] = set()
+    
+    # Add client to room
+    connections[room_code].add(websocket)
+    
+    # Broadcast member count to all clients in the room
+    member_count = len(connections[room_code])
+    await broadcast_member_count(room_code)
+    
     try:
         while True:
             data = await websocket.receive_text()
-            # Broadcast to all in room
-            for conn in connections[room_code]:
-                await conn.send_text(f"{username}: {data}")
+            # Broadcast the message to all clients in the room
+            for client in connections[room_code]:
+                await client.send_text(f"{username}: {data}")
     except WebSocketDisconnect:
+        # Remove client from room
         connections[room_code].remove(websocket)
+        if not connections[room_code]:
+            del connections[room_code]
+        else:
+            # Broadcast updated member count
+            await broadcast_member_count(room_code)
+
+async def broadcast_member_count(room_code: str):
+    if room_code in connections:
+        count = len(connections[room_code])
+        message = json.dumps({
+            "type": "members_update",
+            "count": count
+        })
+        for client in connections[room_code]:
+            await client.send_text(message)
