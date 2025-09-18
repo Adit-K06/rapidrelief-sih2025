@@ -127,3 +127,6 @@ npx expo start
 - Google Maps Platform
 - React Native Community
 - Expo Development Team
+
+## Video of the application:
+https://github.com/user-attachments/assets/a208a611-e50f-4ede-8629-bc9b97256743
